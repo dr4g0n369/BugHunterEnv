@@ -155,7 +155,7 @@ class BugHunterEnvEnvironment(Environment):
             body=body,
             hint="",
             done=False,
-            reward=0.0,
+            reward=0.01,
         )
 
     def _classify_payload(self, path: str, body: str) -> str | None:
@@ -395,25 +395,25 @@ class BugHunterEnvEnvironment(Environment):
 
         if self.task_id == "idor":
             if "admin_profile" in s:
-                return 1.0
+                return 0.99
             if any(k.startswith("user_") for k in s):
                 return 0.5
-            return 0.0
+            return 0.01
 
         if self.task_id == "sqli":
             if "admin_creds" in s or "admin_login" in s:
-                return 1.0
+                return 0.99
             if "partial_creds" in s:
                 return 0.6
             if "waf_hit_search" in s:
                 return 0.4
             if "sql_error" in s:
                 return 0.3
-            return 0.0
+            return 0.01
 
         if self.task_id == "path_traversal":
             if "file_read" in s:
-                return 1.0
+                return 0.99
             if "waf_hit" in s and "admin_auth" in s:
                 return 0.7
             if "waf_hit" in s:
@@ -428,9 +428,9 @@ class BugHunterEnvEnvironment(Environment):
                 return 0.1
             if "non_admin_auth" in s:
                 return 0.05
-            return 0.0
+            return 0.01
 
-        return 0.0
+        return 0.01
 
     def close(self) -> None:
         if self._flask_server:
