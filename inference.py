@@ -25,6 +25,12 @@ TASKS = [
     {"id": "path_traversal", "max_steps": 20},
 ]
 
+MAX_TASK_REWARD = {
+    "idor":           3.0,
+    "sqli":           5.0,
+    "path_traversal": 7.0,
+}
+
 HISTORY_WINDOW = 6
 
 SYSTEM_PROMPT = """You are an expert penetration tester performing a security audit on a corporate internal API.
@@ -167,8 +173,9 @@ async def run_task(ai_client: OpenAI, env_client: BugHunterEnv, task: dict) -> N
         if result.done and last_reward >= 1.0:
             solved = True
 
-    score = 1.0 if solved else (sum(rewards) / len(rewards) if rewards else 0.0)
-    score = min(max(score, 0.0), 1.0)
+    max_reward = MAX_TASK_REWARD.get(task_id, float(max_steps))
+    raw_score = sum(rewards) / max_reward if rewards else 0.0
+    score = max(0.001, min(0.999, raw_score))
     log_end(success=solved, steps=step_count, score=score, rewards=rewards)
 
 
