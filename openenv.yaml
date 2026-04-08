@@ -1,0 +1,25 @@
+spec_version: 1
+name: bug_hunter_env
+type: space
+runtime: fastapi
+app: server.app:app
+port: 8000
+
+tasks:
+  - id: idor
+    name: "IDOR Discovery"
+    description: "Find the hidden admin user profile by exploiting an Insecure Direct Object Reference"
+    difficulty: easy
+    max_steps: 10
+
+  - id: sqli
+    name: "SQL Injection"
+    description: "Bypass the login form authentication using SQL injection"
+    difficulty: medium
+    max_steps: 15
+
+  - id: path_traversal
+    name: "Path Traversal"
+    description: "Gain admin access via SQL injection, then bypass the WAF to read sensitive server files"
+    difficulty: hard
+    max_steps: 20
